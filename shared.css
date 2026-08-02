@@ -220,6 +220,40 @@ button[disabled] { opacity: .5; cursor: not-allowed; }
 }
 .formstatus:empty { margin-top: 0; }
 
+/* --- Entrada e revelacao -------------------------------------------------
+   Duas coisas, nao mais. Uma entrada no hero (CSS puro, corre sozinha) e um
+   stagger nos grupos marcados com data-reveal quando entram no ecra.
+   Nao ha fade-on-scroll em todas as seccoes: e o reflexo saturado. --- */
+/* O "to" e explicito de proposito. Sem ele o valor final seria o herdado,
+   e uma keyframe que so declara "from" pode acabar onde comecou. */
+@keyframes gsRise {
+  from { opacity: 0; transform: translateY(16px); }
+  to   { opacity: 1; transform: none; }
+}
+
+.gs-enter > * { animation: gsRise 620ms var(--ease) backwards; }
+.gs-enter > *:nth-child(1) { animation-delay:  60ms; }
+.gs-enter > *:nth-child(2) { animation-delay: 130ms; }
+.gs-enter > *:nth-child(3) { animation-delay: 200ms; }
+.gs-enter > *:nth-child(4) { animation-delay: 270ms; }
+.gs-enter > *:nth-child(5) { animation-delay: 340ms; }
+
+/* O conteudo NUNCA e escondido a espera da animacao. Nao ha estado "armado"
+   com opacity:0: o elemento esta sempre visivel e a animacao so acrescenta
+   a entrada quando o grupo chega ao ecra (backwards, nao forwards).
+   Foi assim que tres falhas apareceram na versao anterior: keyframe sem
+   "to", observador a saltar elementos em scroll rapido, e animacoes CSS
+   pausadas em separadores de fundo. Qualquer uma delas deixava a seccao em
+   branco. Sem opacity:0 de partida, nenhuma delas tem consequencia. */
+[data-reveal].is-in > * { animation: gsRise 560ms var(--ease) backwards; }
+[data-reveal].is-in > *:nth-child(2) { animation-delay:  90ms; }
+[data-reveal].is-in > *:nth-child(3) { animation-delay: 180ms; }
+[data-reveal].is-in > *:nth-child(4) { animation-delay: 270ms; }
+
+@media (prefers-reduced-motion: reduce) {
+  .gs-enter > *, [data-reveal].is-in > * { animation: none; }
+}
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;

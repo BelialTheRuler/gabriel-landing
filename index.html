@@ -31,14 +31,40 @@
   }
   body { background: var(--bg); color: var(--ink); }
 
-  header.top { padding: 4.5rem 0 3rem; }
+  header.top { padding: 4.5rem 0 4rem; overflow: hidden; }
+  .top-inner {
+    display: grid; gap: 3rem; align-items: center;
+    grid-template-columns: minmax(0, 1.05fr) minmax(0, .95fr);
+  }
+  @media (max-width: 900px) { .top-inner { grid-template-columns: 1fr; } }
+
   /* Um kicker por pagina, nao um por seccao. Um e voz, um por seccao e
      andaime. Tracking a 10% porque maiusculas ficam apertadas por omissao. */
   .kicker { color: var(--accent); font-weight: 600; font-size: var(--text-sm); letter-spacing: .1em; text-transform: uppercase; }
   h1 {
-    font-size: var(--text-h1); font-weight: 800;
-    letter-spacing: -.03em; margin: .8rem 0 1rem; max-width: 20ch;
+    font-size: clamp(2.4rem, 1.2rem + 4.4vw, 4.6rem); font-weight: 800;
+    letter-spacing: -.035em; margin: .8rem 0 1rem; max-width: 16ch;
   }
+
+  /* Pilha de tres demos. Sobrepostas e rodadas de proposito: uma grelha
+     de tres miniaturas iguais era o que ja existia mais abaixo na pagina. */
+  .stack { position: relative; aspect-ratio: 1/1; }
+  .stack__card {
+    position: absolute; inset: 0; margin: auto;
+    width: 74%; aspect-ratio: 4/5;
+    border-radius: var(--radius-lg); overflow: hidden;
+    border: 1px solid var(--line);
+    box-shadow: 0 24px 60px rgba(0,0,0,.28);
+    transition: transform 420ms var(--ease), box-shadow 420ms var(--ease);
+  }
+  .stack__card img { width: 100%; height: 100%; object-fit: cover; }
+  .stack__card--1 { transform: rotate(-4deg) translate(-14%, 2%); z-index: 3; }
+  .stack__card--2 { transform: rotate(3deg) translate(6%, -6%); z-index: 2; }
+  .stack__card--3 { transform: rotate(9deg) translate(24%, 6%); z-index: 1; }
+  .stack:hover .stack__card--1 { transform: rotate(-7deg) translate(-22%, 4%); }
+  .stack:hover .stack__card--2 { transform: rotate(2deg) translate(4%, -10%); }
+  .stack:hover .stack__card--3 { transform: rotate(13deg) translate(32%, 8%); }
+  @media (max-width: 900px) { .stack { aspect-ratio: 4/3; max-width: 26rem; margin-inline: auto; } }
   .top p.lede { color: var(--grey); font-size: var(--text-lead); max-width: 54ch; }
   .top .who { margin-top: 1.75rem; font-size: var(--text-sm); color: var(--grey); }
   .cta-row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
@@ -61,8 +87,10 @@
     border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
     transition: transform .15s, border-color .15s;
   }
-  .work:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .work:hover { transform: translateY(-4px); border-color: var(--accent); }
   .work:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  .work .thumb { transition: transform 520ms var(--ease); }
+  .work:hover .thumb, .work:focus-visible .thumb { transform: scale(1.045); }
   /* A miniatura e a propria fotografia de abertura do demo. Um visitante
      reconhece a pagina antes de a abrir. */
   .thumb { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
@@ -96,6 +124,40 @@
   .contact ul { list-style: none; margin-top: 1.25rem; display: grid; gap: .4rem; font-size: var(--text-sm); color: var(--grey); }
 
   footer { padding: 2.5rem 0; font-size: var(--text-sm); color: var(--grey); border-top: 1px solid var(--line); }
+
+  /* --- Movimento ---------------------------------------------------------
+     Uma entrada orquestrada no hero, uma vez, e stagger nos tres cartoes
+     quando entram no ecra. Nao ha fade-on-scroll em todas as seccoes: isso
+     e o reflexo saturado, nao coreografia.
+     As animacoes de entrada sao CSS puro e o estado final e o visivel, por
+     isso a pagina nunca fica em branco se o JS falhar. --- */
+  @keyframes riseIn { from { opacity: 0; transform: translateY(16px); } to { opacity: 1; transform: none; } }
+  @keyframes dealIn { from { opacity: 0; transform: translateY(28px) scale(.96) rotate(0deg); } }
+
+  .top-copy > * { animation: riseIn 620ms var(--ease) backwards; }
+  .top-copy > *:nth-child(1) { animation-delay:  40ms; }
+  .top-copy > *:nth-child(2) { animation-delay: 110ms; }
+  .top-copy > *:nth-child(3) { animation-delay: 180ms; }
+  .top-copy > *:nth-child(4) { animation-delay: 250ms; }
+  .top-copy > *:nth-child(5) { animation-delay: 320ms; }
+
+  /* As cartas "caem" pela ordem inversa da pilha, como quem as pousa. */
+  .stack__card { animation: dealIn 720ms var(--ease) backwards; }
+  .stack__card--3 { animation-delay: 260ms; }
+  .stack__card--2 { animation-delay: 360ms; }
+  .stack__card--1 { animation-delay: 460ms; }
+
+  /* Nunca escondido a espera da animacao. Ver a nota no shared.css. */
+  .works.is-in .work { animation: riseIn 560ms var(--ease) backwards; }
+  .works.is-in .work:nth-child(2) { animation-delay:  90ms; }
+  .works.is-in .work:nth-child(3) { animation-delay: 180ms; }
+
+  @media (prefers-reduced-motion: reduce) {
+    .top-copy > *, .stack__card, .works.is-in .work { animation: none; }
+    .stack:hover .stack__card--1,
+    .stack:hover .stack__card--2,
+    .stack:hover .stack__card--3 { transform: none; }
+  }
 </style>
 </head>
 <body>
@@ -119,21 +181,40 @@
 <main id="conteudo">
 
 <header class="top">
-  <div class="wrap">
-    <p class="kicker" data-pt="Landing pages · Português + Inglês" data-en="Landing pages · Portuguese + English">Landing pages · Português + Inglês</p>
-    <h1 data-pt="Uma página que vende nas duas línguas do seu negócio."
-        data-en="One page that sells in both languages your business needs.">
-      Uma página que vende nas duas línguas do seu negócio.</h1>
-    <p class="lede" data-pt="Se vende a portugueses e a estrangeiros, precisa das duas. Faço a página, o formulário que funciona mesmo, e deixo tudo a correr no seu domínio."
-       data-en="If you sell to Portuguese and foreign customers, you need both. I build the page, the form that actually works, and leave it running on your own domain.">
-      Se vende a portugueses e a estrangeiros, precisa das duas. Faço a página, o formulário que funciona mesmo, e deixo tudo a correr no seu domínio.</p>
-    <p class="who" data-pt="Gabriel Silva · Porto e remoto · entrega em 3 a 7 dias"
-       data-en="Gabriel Silva · Porto and remote · delivered in 3 to 7 days">
-      Gabriel Silva · Porto e remoto · entrega em 3 a 7 dias</p>
-    <div class="cta-row">
-      <a class="btn" href="mailto:belialdev.pro@protonmail.com?subject=Landing%20page"
-         data-pt="Falar sobre a sua página" data-en="Talk about your page">Falar sobre a sua página</a>
-      <a class="btn btn--alt" href="#trabalhos" data-pt="Ver os exemplos" data-en="See the examples">Ver os exemplos</a>
+  <div class="wrap top-inner">
+    <div class="top-copy">
+      <p class="kicker" data-pt="Landing pages · Português + Inglês" data-en="Landing pages · Portuguese + English">Landing pages · Português + Inglês</p>
+      <h1 data-pt="Uma página que vende nas duas línguas do seu negócio."
+          data-en="One page that sells in both languages your business needs.">
+        Uma página que vende nas duas línguas do seu negócio.</h1>
+      <p class="lede" data-pt="Se vende a portugueses e a estrangeiros, precisa das duas. Faço a página, o formulário que funciona mesmo, e deixo tudo a correr no seu domínio."
+         data-en="If you sell to Portuguese and foreign customers, you need both. I build the page, the form that actually works, and leave it running on your own domain.">
+        Se vende a portugueses e a estrangeiros, precisa das duas. Faço a página, o formulário que funciona mesmo, e deixo tudo a correr no seu domínio.</p>
+      <p class="who" data-pt="Gabriel Silva · Porto e remoto · entrega em 3 a 7 dias"
+         data-en="Gabriel Silva · Porto and remote · delivered in 3 to 7 days">
+        Gabriel Silva · Porto e remoto · entrega em 3 a 7 dias</p>
+      <div class="cta-row">
+        <a class="btn" href="mailto:belialdev.pro@protonmail.com?subject=Landing%20page"
+           data-pt="Falar sobre a sua página" data-en="Talk about your page">Falar sobre a sua página</a>
+        <a class="btn btn--alt" href="#trabalhos" data-pt="Ver os exemplos" data-en="See the examples">Ver os exemplos</a>
+      </div>
+    </div>
+
+    <!-- As tres demos empilhadas. E o portfolio a mostrar o trabalho na
+         primeira dobra, em vez de o descrever e mandar rolar. -->
+    <div class="stack" aria-hidden="true">
+      <a class="stack__card stack__card--3" href="demo-loja.html" tabindex="-1">
+        <img src="https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=560&amp;q=75"
+             alt="" loading="eager" decoding="async">
+      </a>
+      <a class="stack__card stack__card--2" href="demo-clinica.html" tabindex="-1">
+        <img src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&amp;fit=crop&amp;w=560&amp;q=75"
+             alt="" loading="eager" decoding="async">
+      </a>
+      <a class="stack__card stack__card--1" href="demo-alojamento.html" tabindex="-1">
+        <img src="https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=560&amp;q=75"
+             alt="" style="object-position: 50% 15%" fetchpriority="high" decoding="async">
+      </a>
     </div>
   </div>
 </header>
@@ -145,7 +226,7 @@
        data-en="One per sector, each with the PT/EN switch at the top. Click it. That is the part most Portuguese pages are missing.">
       Cada um num setor diferente, e todos com o botão PT/EN no topo. Carregue nele. É a parte que a maioria das páginas portuguesas não tem.</p>
 
-    <div class="works">
+    <div class="works" data-reveal>
       <a class="work" href="demo-alojamento.html">
         <img class="thumb"
              src="https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=700&amp;q=75"
@@ -328,5 +409,41 @@
 </footer>
 
 <script src="shared.js"></script>
+<script>
+(function () {
+  // Stagger dos tres exemplos quando entram no ecra. O estado escondido e
+  // adicionado aqui, nunca no HTML: sem JS os cartoes ficam visiveis.
+  // O stagger dos tres exemplos usa o mesmo data-reveal do shared.js.
+
+  // O titulo demonstra-se a si proprio: troca de lingua e volta, uma vez.
+  // E o argumento de venda da pagina inteira, e estava reduzido a um botao
+  // de 44px num canto. Duas trocas, ~3,6s no total, portanto abaixo do
+  // limite dos 5s do WCAG 2.2.2. Para de vez se o visitante usar o PT/EN.
+  var h1 = document.querySelector("h1");
+  if (!h1 || REDUCE || !h1.animate) return;
+
+  var texto = { pt: h1.dataset.pt, en: h1.dataset.en };
+  var actual = document.documentElement.lang === "en" ? "en" : "pt";
+  var outra = actual === "pt" ? "en" : "pt";
+
+  // A logica NAO pode depender de .finished: as animacoes Web param quando o
+  // separador esta em segundo plano, o promise nunca resolve, e o titulo
+  // ficaria preso na lingua errada para quem abre em separador de fundo.
+  // Os temporizadores continuam a correr, por isso o texto e trocado por
+  // setTimeout e a animacao e so a parte visivel.
+  function trocar(para) {
+    if (document.documentElement.dataset.langPinned) return;
+    h1.textContent = texto[para];
+    h1.animate(
+      [{ opacity: 0, filter: "blur(6px)" }, { opacity: 1, filter: "blur(0)" }],
+      { duration: 340, easing: "cubic-bezier(.16,1,.3,1)" }
+    );
+  }
+
+  if (document.hidden) return;   // nunca arranca numa aba que ninguem ve
+  setTimeout(function () { trocar(outra); }, 1700);
+  setTimeout(function () { trocar(actual); }, 3600);   // acaba sempre aqui
+})();
+</script>
 </body>
 </html>
