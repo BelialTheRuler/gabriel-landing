@@ -1,0 +1,231 @@
+/* Base partilhada pelos 4 ficheiros. Cada demo traz o seu proprio <style>
+   com a paleta e o layout, para nao parecerem o mesmo template. */
+
+/* --- Tipos. Auto-alojados de proposito: o publico sao empresas da UE e o
+       CDN da Google ja foi considerado violacao do RGPD em tribunal alemao.
+       Uma pagina que nao faz pedidos a terceiros e um argumento de venda,
+       nao so uma preferencia tecnica.
+       Todos SIL Open Font License 1.1. Ver fonts/README.md.
+       Um @font-face nao descarrega nada ate uma regra o usar, por isso
+       declarar os quatro aqui nao custa nada as paginas que usam um so. --- */
+@font-face {
+  font-family: "Archivo";
+  src: url("fonts/archivo-latin.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Petrona";
+  src: url("fonts/petrona-latin.woff2") format("woff2");
+  font-weight: 400 700;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Public Sans";
+  src: url("fonts/publicsans-latin.woff2") format("woff2");
+  font-weight: 400 800;
+  font-display: swap;
+}
+@font-face {
+  font-family: "Chivo";
+  src: url("fonts/chivo-latin.woff2") format("woff2");
+  font-weight: 400 900;
+  font-display: swap;
+}
+
+:root {
+  /* Cada pagina redefine --font-body. Este e o recurso se nao redefinir. */
+  --font-body: system-ui, -apple-system, "Segoe UI", sans-serif;
+
+  /* Escala modular, racio 1.25. O h3 estava a 1.05rem contra corpo a 1rem,
+     um racio de 1.05, que e o mesmo que nao ter hierarquia. */
+  --text-xs: .78rem;
+  --text-sm: .875rem;
+  --text-body: 1rem;
+  --text-lead: 1.25rem;
+  --text-h3: 1.25rem;
+  --text-h2: clamp(1.6rem, 1.2rem + 1.6vw, 2.4rem);
+  --text-h1: clamp(2.2rem, 1.4rem + 3.6vw, 3.8rem);
+
+  --lh-tight: 1.08;
+  --lh-body: 1.6;
+
+  /* Escala de espacamento. Antes havia .15rem, .35rem, .45rem, .85rem e
+     1.75rem espalhados a olho. Multiplos de 4px, um so sitio. */
+  --sp-1: .25rem;
+  --sp-2: .5rem;
+  --sp-3: .75rem;
+  --sp-4: 1rem;
+  --sp-6: 1.5rem;
+  --sp-8: 2rem;
+  --sp-12: 3rem;
+  --sp-16: 4rem;
+
+  --radius-sm: 4px;
+  --radius: 8px;
+  --radius-lg: 12px;
+  --radius-pill: 999px;
+
+  /* Uma curva so, ease-out-quart. Sem bounce, sem elastic. */
+  --ease: cubic-bezier(.25, 1, .5, 1);
+  --dur: 180ms;
+
+  /* z-index nomeado, nao 999 arbitrario. */
+  --z-sticky: 100;
+  --z-skip: 200;
+}
+
+* { margin: 0; padding: 0; box-sizing: border-box; }
+
+body {
+  font-family: var(--font-body);
+  font-size: var(--text-body);
+  line-height: var(--lh-body);
+  font-kerning: normal;
+  font-optical-sizing: auto;
+  -webkit-font-smoothing: antialiased;
+}
+
+h1, h2, h3 { line-height: var(--lh-tight); text-wrap: balance; }
+p { text-wrap: pretty; }
+
+img { max-width: 100%; display: block; }
+a { color: inherit; }
+
+/* --- Foco visivel, uma regra para tudo. Antes existia em 2 de ~30
+       elementos interactivos. currentColor adapta-se ao fundo sozinho,
+       o que evita ter de repetir a regra por paleta. --- */
+a:focus-visible,
+button:focus-visible,
+input:focus-visible,
+select:focus-visible,
+textarea:focus-visible,
+summary:focus-visible,
+[tabindex]:focus-visible {
+  outline: 3px solid currentColor;
+  outline-offset: 2px;
+  border-radius: 2px;
+}
+
+/* --- Salto para o conteudo. Escondido ate receber foco. --- */
+.skip-link {
+  position: absolute;
+  left: .5rem;
+  top: -4rem;
+  z-index: var(--z-skip);
+  background: #1a1a1a;
+  color: #fff;
+  padding: .85rem 1.25rem;
+  border-radius: 0 0 4px 4px;
+  text-decoration: none;
+  font-size: .9rem;
+  transition: top var(--dur) var(--ease);
+}
+.skip-link:focus { top: 0; }
+@media (prefers-reduced-motion: reduce) { .skip-link { transition: none; } }
+
+/* --- Barra de demonstracao. Obrigatoria: deixa claro que a empresa
+       nao existe. Nao remover ao mostrar a clientes. --- */
+.demo-bar {
+  position: sticky;
+  top: 0;
+  z-index: var(--z-sticky);
+  display: flex;
+  flex-wrap: wrap;
+  gap: .75rem;
+  align-items: center;
+  justify-content: space-between;
+  padding: .25rem 1rem;
+  background: #1a1a1a;
+  color: #fff;
+  font-size: .8rem;
+}
+/* .75 sobre #1a1a1a da 10:1. Sobre uma cor saturada dava 2,1:1, e foi assim
+   que o aviso de honestidade se tornou o texto menos legivel do site.
+   Por isso este fundo e fixo e nao herda a paleta da pagina. */
+.demo-bar__note { opacity: .75; }
+.demo-bar__note b { opacity: 1; font-weight: 600; }
+.demo-bar__right { display: flex; gap: .5rem; align-items: center; }
+.demo-bar a.demo-bar__back {
+  color: #fff;
+  text-decoration: none;
+  opacity: .75;
+  display: inline-flex;
+  align-items: center;
+  min-height: 44px;
+  padding-inline: .35rem;
+}
+.demo-bar a.demo-bar__back:hover { opacity: 1; }
+
+/* --- Selector de lingua --- */
+.lang {
+  display: inline-flex;
+  border: 1px solid rgba(255, 255, 255, .3);
+  border-radius: 999px;
+  overflow: hidden;
+}
+/* 44x44 minimo (WCAG 2.5.5). E a interaccao mais importante do portfolio
+   e estava a 32x24, o que a tornava a mais dificil de acertar com o polegar. */
+.lang button {
+  font: inherit;
+  font-size: .75rem;
+  display: inline-flex;
+  align-items: center;
+  justify-content: center;
+  min-width: 44px;
+  min-height: 44px;
+  padding-inline: .5rem;
+  background: none;
+  border: 0;
+  color: inherit;
+  cursor: pointer;
+  opacity: .6;
+}
+.lang button[aria-pressed="true"] { background: #fff; color: #1a1a1a; opacity: 1; font-weight: 600; }
+
+/* --- Utilitarios --- */
+.wrap { width: min(1100px, 100% - 2.5rem); margin-inline: auto; }
+.sr-only {
+  position: absolute; width: 1px; height: 1px;
+  overflow: hidden; clip: rect(0 0 0 0); white-space: nowrap;
+}
+
+/* --- Icones. Uma familia so: traco de 1.75, 24px, currentColor, pontas
+       redondas. Substituem o emoji, que herda a paleta do sistema
+       operativo do visitante e nao a da pagina. --- */
+.icon {
+  width: 1.5em;
+  height: 1.5em;
+  flex: none;
+  stroke: currentColor;
+  stroke-width: 1.75;
+  stroke-linecap: round;
+  stroke-linejoin: round;
+  fill: none;
+}
+.icon--sm { width: 1.15em; height: 1.15em; }
+
+/* --- Estados. Todo o elemento interactivo responde ao rato e ao dedo. --- */
+button, a, summary, input, select { transition: background-color var(--dur) var(--ease), color var(--dur) var(--ease), border-color var(--dur) var(--ease), opacity var(--dur) var(--ease); }
+button:active, a[class*="btn"]:active { transform: translateY(1px); }
+button[disabled] { opacity: .5; cursor: not-allowed; }
+
+/* --- Regiao de estado dos formularios. Substitui a troca do texto do
+       botao, que se perdia ao mudar de lingua. --- */
+.formstatus {
+  margin-top: var(--sp-3);
+  font-size: var(--text-sm);
+  min-height: 1.5em;
+  grid-column: 1 / -1;   /* ocupa a linha toda quando o form e uma grelha */
+}
+.formstatus:empty { margin-top: 0; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: .01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: .01ms !important;
+    scroll-behavior: auto !important;
+  }
+  button:active, a[class*="btn"]:active { transform: none; }
+}

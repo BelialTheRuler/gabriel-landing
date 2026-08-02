@@ -1,0 +1,399 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Casa do Douro · demonstração</title>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link rel="dns-prefetch" href="https://images.unsplash.com">
+<link rel="preload" href="fonts/petrona-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* Xisto, nao terracota. A pedra de que a casa e feita e ardosia azul-cinza;
+     a terracota e a telha, que e uma parte pequena do que se ve. Inverter os
+     dois tira a pagina da banda creme que toda a gente usa para "artesao".
+     Neutros com croma na direccao do proprio xisto, nao quentes por defeito.
+     Racios verificados: stone/paper 6,54:1 · terra/paper 5,37:1. */
+  :root {
+    --ink: oklch(24% .025 265);        /* xisto profundo */
+    --paper: oklch(97% .005 265);      /* off-white puxado ao xisto */
+    --surface: oklch(99% .003 265);    /* cartoes */
+    --stone: oklch(46% .018 265);      /* texto corrido */
+    --terra: oklch(52% .14 42);        /* telha. Acento, 10%. */
+    --terra-dark: oklch(44% .13 42);
+    --terra-light: oklch(72% .12 42);  /* mesma telha, sobre fundo escuro */
+    --line: oklch(90% .008 265);
+    --font-body: "Petrona", Georgia, serif;
+  }
+  body { background: var(--paper); color: var(--ink); }
+
+  /* Hero full-bleed. A fotografia e o desenho; o gradiente por cima existe
+     so para o texto passar contraste sobre qualquer zona da imagem. */
+  .hero {
+    position: relative;
+    min-height: 78vh;
+    display: grid;
+    align-items: center;
+    color: var(--paper);
+    padding: 4rem 0;
+    isolation: isolate;
+  }
+  .hero__img {
+    position: absolute;
+    inset: 0;
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+    /* Enquadra os socalcos e deixa cair o edificio real que aparece a meio
+       da fotografia. Uma casa ficticia nao mostra a quinta de outra pessoa. */
+    object-position: 50% 18%;
+    z-index: -2;
+  }
+  .hero::before {
+    content: "";
+    position: absolute;
+    inset: 0;
+    z-index: -1;
+    background: linear-gradient(100deg,
+      oklch(18% .03 265 / .88) 0%,
+      oklch(18% .03 265 / .74) 45%,
+      oklch(18% .03 265 / .25) 100%);
+  }
+  .hero h1 {
+    font-size: var(--text-h1);
+    font-weight: 700;
+    letter-spacing: -.015em;
+    max-width: 16ch;
+  }
+  /* Texto claro sobre escuro perde peso aparente. Compensa-se nos tres
+     eixos, nao so num: entrelinha, tracking e peso. */
+  .hero p {
+    font-size: var(--text-lead); max-width: 46ch; margin-top: 1rem;
+    opacity: .92; line-height: 1.65; letter-spacing: .01em; font-weight: 500;
+  }
+  .eyebrow {
+    text-transform: uppercase; letter-spacing: .1em;
+    font-size: var(--text-sm); font-weight: 600; opacity: .85; margin-bottom: 1rem;
+  }
+
+  .btn {
+    display: inline-block;
+    background: var(--terra);
+    color: var(--surface);
+    text-decoration: none;
+    font-weight: 600;
+    padding: .9rem 1.8rem;
+    border-radius: 4px;
+    border: 0;
+    font-size: 1rem;
+    cursor: pointer;
+    transition: background .15s;
+  }
+  .btn:hover { background: var(--terra-dark); }
+  .btn--ghost { background: rgba(255,255,255,.12); border: 1px solid rgba(255,255,255,.5); }
+  .btn--ghost:hover { background: rgba(255,255,255,.22); }
+  .hero-actions { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+  .hero-note { font-size: var(--text-sm); opacity: .8; margin-top: 1rem; }
+
+  /* O argumento de reservar direto. E a unica coisa nesta pagina que o dono
+     nao consegue dizer no Booking.com, por isso vai antes dos quartos. */
+  .direct { background: var(--ink); color: var(--paper); }
+  .direct h2 { color: var(--surface); }
+  .direct .cols {
+    display: grid; gap: 2rem; margin-top: 2rem;
+    grid-template-columns: repeat(auto-fit, minmax(210px, 1fr));
+  }
+  .direct .col strong { display: block; font-size: 2rem; color: var(--terra-light); line-height: 1.1; }
+  .direct .col span { font-size: var(--text-sm); opacity: .85; }
+  .direct .fineprint { margin-top: 2rem; font-size: var(--text-xs); opacity: .6; max-width: 60ch; }
+
+  section { padding: 4.5rem 0; }
+  h2 { font-size: var(--text-h2); font-weight: 700; letter-spacing: -.01em; margin-bottom: .5rem; }
+  h3 { font-size: var(--text-h3); font-weight: 600; }
+  .lede { color: var(--stone); max-width: 55ch; margin-bottom: 2.5rem; }
+
+  /* Nao e uma grelha de cartoes nem uma lista numerada. Vinhas, pequeno-almoco
+     e transfer nao tem ordem entre si, portanto 01/02/03 seria andaime: os
+     numeros so ganham o lugar quando a ordem carrega informacao, como no
+     "Como funciona" do indice, que e mesmo uma sequencia de quatro passos.
+     A estrutura vem da regua e do titulo, que chegam. */
+  .reasons { max-width: 62ch; }
+  .reason { padding: var(--sp-6) 0; border-top: 1px solid var(--line); }
+  .reason:last-child { border-bottom: 1px solid var(--line); }
+  .reason h3 { margin-bottom: var(--sp-1); }
+  .reason p { color: var(--stone); font-size: var(--text-sm); max-width: 52ch; }
+
+  .rooms { background: var(--surface); }
+  .room {
+    display: grid; gap: 2rem; align-items: center;
+    grid-template-columns: minmax(0, 1fr) minmax(0, 1fr);
+  }
+  .room + .room { margin-top: 3rem; }
+  .room__img {
+    aspect-ratio: 3/2;
+    width: 100%;
+    object-fit: cover;
+    border-radius: 6px;
+  }
+  .price { font-size: 1.5rem; font-weight: 700; color: var(--terra); }
+  .price span { font-size: var(--text-sm); font-weight: 400; color: var(--stone); }
+  /* Alterna o lado da fotografia. Em coluna unica a alternancia nao faz
+     sentido, por isso a media query vem depois e anula a ordem. */
+  .room--flip > *:first-child { order: 2; }
+  @media (max-width: 700px) {
+    .room { grid-template-columns: 1fr; }
+    .room--flip > *:first-child { order: 0; }
+  }
+
+  /* Formulario de reserva: o ponto onde a pagina passa de folheto a
+     ferramenta. E o que o cliente compra. */
+  .booking { background: var(--ink); color: var(--paper); }
+  .booking form {
+    display: grid; gap: 1rem;
+    grid-template-columns: repeat(auto-fit, minmax(180px, 1fr));
+    background: rgba(255,255,255,.06);
+    padding: 1.75rem; border-radius: 6px; margin-top: 2rem;
+  }
+  .field { display: flex; flex-direction: column; gap: .35rem; }
+  .field label { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .08em; opacity: .7; }
+  .field input, .field select {
+    font: inherit; padding: .7rem; border-radius: 4px;
+    border: 1px solid rgba(255,255,255,.25);
+    background: oklch(16% .02 265); color: var(--paper);
+  }
+  .field--full { grid-column: 1 / -1; }
+  .booking .btn { width: 100%; }
+  .whatsapp { display: inline-flex; gap: .5rem; align-items: center; margin-top: 1.25rem; font-size: var(--text-sm); opacity: .8; }
+  .guestnote {
+    margin-top: 1.75rem; padding-left: 1.25rem;
+    border-left: 1px solid rgba(255,255,255,.25);
+    max-width: 52ch; font-size: var(--text-sm);
+  }
+  .guestnote cite { display: block; margin-top: .6rem; font-size: var(--text-xs); opacity: .6; font-style: normal; }
+
+  footer { padding: 2.5rem 0; font-size: var(--text-sm); color: var(--stone); }
+  .footnote { border-top: 1px solid var(--line); padding-top: 1.5rem; }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#conteudo" data-pt="Saltar para o conteúdo" data-en="Skip to content">Saltar para o conteúdo</a>
+
+<div class="demo-bar">
+  <span class="demo-bar__note">
+    <b data-pt="Demonstração." data-en="Demo.">Demonstração.</b>
+    <span data-pt="&quot;Casa do Douro&quot; é uma empresa fictícia criada para este exemplo."
+          data-en="&quot;Casa do Douro&quot; is a fictional business created for this example.">
+      "Casa do Douro" é uma empresa fictícia criada para este exemplo.
+    </span>
+  </span>
+  <span class="demo-bar__right">
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang-btn="pt" aria-pressed="true">PT</button>
+      <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+    </div>
+    <a class="demo-bar__back" href="index.html" data-pt="← Portfólio" data-en="← Portfolio">← Portfólio</a>
+  </span>
+</div>
+
+<main id="conteudo">
+
+<header class="hero">
+  <img class="hero__img"
+       src="https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=1800&amp;q=80"
+             srcset="https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=640&amp;q=80 640w, https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=960&amp;q=80 960w, https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=1280&amp;q=80 1280w, https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=1600&amp;q=80 1600w, https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=2000&amp;q=80 2000w"
+             sizes="100vw"
+       alt="Socalcos de vinha a descer a encosta até ao rio Douro, ao início da tarde"
+       fetchpriority="high" decoding="async">
+  <div class="wrap">
+    <p class="eyebrow" data-pt="Alojamento Local · Peso da Régua" data-en="Guest house · Peso da Régua">Alojamento Local · Peso da Régua</p>
+    <h1 data-pt="Uma casa de xisto sobre as vinhas do Douro."
+        data-en="A stone house above the Douro vineyards.">Uma casa de xisto sobre as vinhas do Douro.</h1>
+    <p data-pt="Quatro quartos, pequeno-almoço com produtos da região e o rio a duzentos metros. Reserve aqui e paga menos do que nos sites de reservas."
+       data-en="Four rooms, breakfast made with local produce, and the river two hundred metres away. Book here and pay less than on the booking sites.">
+      Quatro quartos, pequeno-almoço com produtos da região e o rio a duzentos metros. Reserve aqui e paga menos do que nos sites de reservas.</p>
+    <div class="hero-actions">
+      <a class="btn" href="#reservar" data-pt="Ver datas livres" data-en="See available dates">Ver datas livres</a>
+    </div>
+    <p class="hero-note" data-pt="Resposta em menos de 12 horas · Sem pagamento agora · Cancelamento grátis"
+       data-en="Reply within 12 hours · No payment now · Free cancellation">
+      Resposta em menos de 12 horas · Sem pagamento agora · Cancelamento grátis</p>
+  </div>
+</header>
+
+<section>
+  <div class="wrap">
+    <h2 data-pt="Porquê ficar aqui" data-en="Why stay here">Porquê ficar aqui</h2>
+    <p class="lede" data-pt="Três razões, e nenhuma delas é a piscina."
+       data-en="Three reasons, and none of them is the pool.">Três razões, e nenhuma delas é a piscina.</p>
+    <div class="reasons">
+      <div class="reason">
+        <h3 data-pt="Vinhas à porta" data-en="Vineyards at the door">Vinhas à porta</h3>
+        <p data-pt="Provas em três quintas vizinhas, a pé. Marcamos nós, sem custo."
+           data-en="Tastings at three neighbouring estates, on foot. We book them for you, free of charge.">
+          Provas em três quintas vizinhas, a pé. Marcamos nós, sem custo.</p>
+      </div>
+      <div class="reason">
+        <h3 data-pt="Pequeno-almoço incluído" data-en="Breakfast included">Pequeno-almoço incluído</h3>
+        <p data-pt="Pão do forno da aldeia, fruta da horta, ovos das nossas galinhas."
+           data-en="Bread from the village oven, fruit from the garden, eggs from our hens.">
+          Pão do forno da aldeia, fruta da horta, ovos das nossas galinhas.</p>
+      </div>
+      <div class="reason">
+        <h3 data-pt="Transfer do comboio" data-en="Train transfer">Transfer do comboio</h3>
+        <p data-pt="Vamos buscá-lo à estação da Régua. Diga a hora e estamos lá."
+           data-en="We pick you up at Régua station. Tell us the time and we are there.">
+          Vamos buscá-lo à estação da Régua. Diga a hora e estamos lá.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="direct">
+  <div class="wrap">
+    <h2 data-pt="Porque é mais barato reservar aqui" data-en="Why booking here costs you less">Porque é mais barato reservar aqui</h2>
+    <p data-pt="Os sites de reservas ficam com uma parte de cada noite. Reservando direto, essa parte fica entre nós os dois."
+       data-en="The booking sites keep a slice of every night. Booking direct, that slice stays between the two of us.">
+      Os sites de reservas ficam com uma parte de cada noite. Reservando direto, essa parte fica entre nós os dois.</p>
+    <div class="cols">
+      <div class="col">
+        <strong>15-25%</strong>
+        <span data-pt="é o que uma plataforma cobra por cada reserva, mais taxas de pagamento"
+              data-en="is what a platform charges per booking, plus payment fees">
+          é o que uma plataforma cobra por cada reserva, mais taxas de pagamento</span>
+      </div>
+      <div class="col">
+        <strong data-pt="-10 €" data-en="-€10">-10 €</strong>
+        <span data-pt="por noite reservada aqui, em vez do desconto ficar na plataforma"
+              data-en="per night booked here, instead of the discount going to the platform">
+          por noite reservada aqui, em vez do desconto ficar na plataforma</span>
+      </div>
+      <div class="col">
+        <strong data-pt="Sem cartão" data-en="No card">Sem cartão</strong>
+        <span data-pt="não pedimos pagamento para confirmar. Paga à chegada."
+              data-en="we ask for no payment to confirm. You pay on arrival.">
+          não pedimos pagamento para confirmar. Paga à chegada.</span>
+      </div>
+    </div>
+    <p class="fineprint" data-pt="Percentagens de comissão das plataformas de reserva, referência de mercado 2026. Os valores desta página são de demonstração."
+       data-en="Booking-platform commission percentages, 2026 market reference. The figures on this page are for demonstration.">
+      Percentagens de comissão das plataformas de reserva, referência de mercado 2026. Os valores desta página são de demonstração.</p>
+  </div>
+</section>
+
+<section class="rooms" id="quartos">
+  <div class="wrap">
+    <h2 data-pt="Os quartos" data-en="The rooms">Os quartos</h2>
+    <p class="lede" data-pt="Quatro no total. Todos com vista para o vale."
+       data-en="Four in total. All facing the valley.">Quatro no total. Todos com vista para o vale.</p>
+
+    <div class="room">
+      <img class="room__img"
+           src="https://images.unsplash.com/photo-1768487422639-7ba3900d0f02?auto=format&amp;fit=crop&amp;w=900&amp;q=80"
+             srcset="https://images.unsplash.com/photo-1768487422639-7ba3900d0f02?auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1768487422639-7ba3900d0f02?auto=format&amp;fit=crop&amp;w=600&amp;q=80 600w, https://images.unsplash.com/photo-1768487422639-7ba3900d0f02?auto=format&amp;fit=crop&amp;w=900&amp;q=80 900w, https://images.unsplash.com/photo-1768487422639-7ba3900d0f02?auto=format&amp;fit=crop&amp;w=1200&amp;q=80 1200w"
+             sizes="(max-width: 700px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 4.5rem) / 2), 534px"
+           alt="Quarto claro de tecto alto, cama de casal feita, lareira acesa ao fundo"
+           loading="lazy" decoding="async">
+      <div>
+        <h3 data-pt="Quarto Vinha" data-en="Vineyard Room">Quarto Vinha</h3>
+        <p class="lede" data-pt="Cama de casal, varanda virada a sul, casa de banho privativa. 28 m²."
+           data-en="Double bed, south-facing balcony, private bathroom. 28 m².">
+          Cama de casal, varanda virada a sul, casa de banho privativa. 28 m².</p>
+        <p class="price">95 € <span data-pt="/ noite" data-en="/ night">/ noite</span></p>
+      </div>
+    </div>
+
+    <div class="room room--flip">
+      <img class="room__img"
+           src="https://images.unsplash.com/photo-1730322046135-a754d71b7ec0?auto=format&amp;fit=crop&amp;w=900&amp;q=80"
+             srcset="https://images.unsplash.com/photo-1730322046135-a754d71b7ec0?auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1730322046135-a754d71b7ec0?auto=format&amp;fit=crop&amp;w=600&amp;q=80 600w, https://images.unsplash.com/photo-1730322046135-a754d71b7ec0?auto=format&amp;fit=crop&amp;w=900&amp;q=80 900w, https://images.unsplash.com/photo-1730322046135-a754d71b7ec0?auto=format&amp;fit=crop&amp;w=1200&amp;q=80 1200w"
+             sizes="(max-width: 700px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 4.5rem) / 2), 534px"
+           alt="Quarto de luz baixa com a parede de pedra original deixada à vista"
+           loading="lazy" decoding="async">
+      <div>
+        <h3 data-pt="Quarto Xisto" data-en="Slate Room">Quarto Xisto</h3>
+        <p class="lede" data-pt="Duas camas individuais, paredes de pedra originais de 1890. 24 m²."
+           data-en="Two single beds, original 1890 stone walls. 24 m².">
+          Duas camas individuais, paredes de pedra originais de 1890. 24 m².</p>
+        <p class="price">80 € <span data-pt="/ noite" data-en="/ night">/ noite</span></p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="booking" id="reservar">
+  <div class="wrap">
+    <h2 data-pt="Pedir reserva" data-en="Request a booking">Pedir reserva</h2>
+    <p data-pt="Respondemos em menos de 12 horas. Sem pagamento agora."
+       data-en="We reply within 12 hours. No payment now.">Respondemos em menos de 12 horas. Sem pagamento agora.</p>
+
+    <blockquote class="guestnote">
+      <p data-pt="&quot;Reservámos pelo site em vez da plataforma e ficou 40 € mais barato nas três noites. O António foi buscar-nos à estação e marcou-nos as provas.&quot;"
+         data-en="&quot;We booked on the site instead of the platform and it came out €40 cheaper over three nights. António picked us up at the station and booked our tastings.&quot;">
+        "Reservámos pelo site em vez da plataforma e ficou 40 € mais barato nas três noites. O António foi buscar-nos à estação e marcou-nos as provas."</p>
+      <cite data-pt="Hóspede fictício, Régua · texto de demonstração"
+            data-en="Fictional guest, Régua · demonstration text">Hóspede fictício, Régua · texto de demonstração</cite>
+    </blockquote>
+
+    <form onsubmit="event.preventDefault(); showDemoNotice(this);">
+      <div class="field">
+        <label for="in" data-pt="Entrada" data-en="Check-in">Entrada</label>
+        <input id="in" type="date" required>
+      </div>
+      <div class="field">
+        <label for="out" data-pt="Saída" data-en="Check-out">Saída</label>
+        <input id="out" type="date" required>
+      </div>
+      <div class="field">
+        <label for="pax" data-pt="Hóspedes" data-en="Guests">Hóspedes</label>
+        <select id="pax">
+          <option>1</option><option selected>2</option><option>3</option><option>4</option>
+        </select>
+      </div>
+      <div class="field field--full">
+        <label for="email" data-pt="Email" data-en="Email">Email</label>
+        <input id="email" type="email" required
+               data-pt-attr="placeholder:o.seu@email.pt" data-en-attr="placeholder:your@email.com"
+               placeholder="o.seu@email.pt">
+      </div>
+      <div class="field field--full">
+        <button class="btn" type="submit" data-pt="Enviar pedido" data-en="Send request">Enviar pedido</button>
+      </div>
+          <p class="formstatus" role="status" aria-live="polite"></p>
+    </form>
+
+    <p class="whatsapp">
+      <svg class="icon icon--sm" viewBox="0 0 24 24" aria-hidden="true"><path d="M21 11.5a8.4 8.4 0 0 1-9 8.4 8.5 8.5 0 0 1-3.9-.9L3 21l1.9-4.1A8.4 8.4 0 0 1 12 3a8.4 8.4 0 0 1 9 8.5Z"/></svg>
+      <span data-pt="Ou fale connosco por WhatsApp: +351 000 000 000"
+            data-en="Or message us on WhatsApp: +351 000 000 000">Ou fale connosco por WhatsApp: +351 000 000 000</span>
+    </p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap footnote">
+    <p data-pt="Casa do Douro · Empresa fictícia. Página de demonstração construída por Gabriel Silva."
+       data-en="Casa do Douro · Fictional business. Demo page built by Gabriel Silva.">
+      Casa do Douro · Empresa fictícia. Página de demonstração construída por Gabriel Silva.</p>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+<script>
+  // Datas: nao deixa escolher passado, nem saida antes da entrada.
+  // Prevenir o erro vale mais do que a mensagem depois.
+  (function () {
+    var inp = document.getElementById("in"), out = document.getElementById("out");
+    var today = new Date().toISOString().slice(0, 10);
+    inp.min = out.min = today;
+    inp.addEventListener("change", function () {
+      out.min = inp.value || today;
+      if (out.value && out.value <= inp.value) out.value = "";
+    });
+  })();
+</script>
+</body>
+</html>

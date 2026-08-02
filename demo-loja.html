@@ -1,0 +1,310 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<meta name="robots" content="noindex">
+<title>Cortiça Atlântica · demonstração</title>
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link rel="dns-prefetch" href="https://images.unsplash.com">
+<link rel="preload" href="fonts/chivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared.css">
+<style>
+  /* Estrategia: Restrained, nao Drenched. O Atlantico continua a ser a cor
+     da marca, mas passa a aparecer em faixas escuras sobre uma pagina clara,
+     em vez de cobrir tudo. Retalho de moda le-se limpo assim.
+     O off-white e FRIO, puxado ao proprio azul (hue 245). Um off-white quente
+     cairia na banda creme, que e o tell saturado de 2026 e o oposto de limpo.
+     Racios: muted/paper 6,23:1 · ink/paper 16,54:1 · cork/paper 5,98:1. */
+  :root {
+    --paper: oklch(98.5% .004 245);   /* corpo da pagina, off-white frio */
+    --surface: oklch(100% 0 0);       /* cartoes e faixa branca */
+    --ink: oklch(22% .04 245);        /* texto e botao primario */
+    --muted: oklch(48% .02 245);      /* texto secundario */
+    --deep: oklch(20% .04 245);       /* topbar, faixa de exportacao, rodape */
+    --cork: oklch(50% .115 55);       /* a cortica. Preco e afirmacoes. */
+    --cork-dark: oklch(42% .11 55);
+    --cork-light: oklch(74% .11 65);  /* mesma cortica sobre fundo escuro */
+    --line: oklch(91% .006 245);      /* reguas decorativas */
+    --line-strong: oklch(62% .012 245); /* bordas de campos, 3,48:1 */
+    --font-body: "Chivo", system-ui, sans-serif;
+  }
+  body { background: var(--paper); color: var(--ink); }
+
+  .topbar {
+    background: var(--deep); color: var(--paper);
+    text-align: center; font-size: var(--text-sm); padding: .55rem 1rem; letter-spacing: .02em;
+  }
+
+  .nav { display: flex; align-items: center; justify-content: space-between; padding: 1.4rem 0; }
+  .logo { font-weight: 800; font-size: var(--text-lead); letter-spacing: -.02em; text-transform: uppercase; }
+  .cart { font-size: var(--text-sm); font-weight: 600; }
+
+  .hero { padding: 3rem 0 4.5rem; }
+  .hero-inner { display: grid; gap: 3rem; grid-template-columns: 1fr 1fr; align-items: center; }
+  @media (max-width: 820px) { .hero-inner { grid-template-columns: 1fr; } }
+  /* Chivo aguenta o 900 sem se desfazer. E o unico sitio onde vai tao alto. */
+  h1 {
+    font-size: var(--text-h1); line-height: 1.02;
+    letter-spacing: -.035em; font-weight: 900; max-width: 12ch;
+  }
+  h3 { font-size: var(--text-h3); font-weight: 600; }
+  .hero p { color: var(--muted); font-size: var(--text-lead); margin-top: 1.25rem; max-width: 42ch; }
+
+  .btn {
+    display: inline-block; text-decoration: none; font: inherit; font-weight: 700;
+    background: var(--ink); color: var(--paper);
+    padding: .95rem 2rem; border: 0; border-radius: 999px; cursor: pointer;
+  }
+  .btn:hover { background: var(--deep); }
+  .hero .btn { margin-top: 2rem; }
+  .hero .meta { display: block; margin-top: .9rem; font-size: var(--text-sm); color: var(--muted); }
+
+  /* Uma fotografia, nao uma colagem de tres. */
+  .hero__img { width: 100%; aspect-ratio: 4/5; object-fit: cover; border-radius: 12px; }
+
+  section { padding: 4rem 0; }
+  h2 { font-size: var(--text-h2); font-weight: 800; letter-spacing: -.02em; margin-bottom: .4rem; }
+  .lede { color: var(--muted); margin-bottom: 2.25rem; max-width: 52ch; }
+
+  /* Comparacao com o material que o comprador esta a considerar em vez deste.
+     E a pergunta que ele tem na cabeca, respondida antes de a fazer. */
+  .versus { border-top: 1px solid var(--line); border-bottom: 1px solid var(--line); }
+  .versus table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  .versus th, .versus td { text-align: left; padding: .8rem .6rem; border-bottom: 1px solid var(--line); }
+  .versus thead th { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .1em; color: var(--muted); }
+  .versus tbody th { font-weight: 600; }
+  .versus td.yes { color: var(--cork); font-weight: 700; }
+  .versus td.no { color: var(--muted); }
+  .table-scroll { overflow-x: auto; }
+
+  .products { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(210px, 1fr)); }
+  .p-img {
+    width: 100%;
+    aspect-ratio: 1;
+    object-fit: cover;
+    border-radius: 10px;
+    margin-bottom: .85rem;
+  }
+  .prod .price { font-weight: 700; margin-top: .2rem; }
+  .prod .ship { font-size: var(--text-xs); color: var(--muted); margin-top: .15rem; }
+
+  /* Faixa de exportacao. E aqui que vive o argumento bilingue: quem compra
+     de Berlim precisa de saber prazo, portes e devolucao na sua lingua
+     antes de meter o cartao. */
+  .export { background: var(--deep); color: var(--paper); border-radius: 16px; padding: 2.5rem; }
+  .export h2 { color: var(--cork-light); }
+  .export .cols { display: grid; gap: 2rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); margin-top: 1.75rem; }
+  .export .col strong { display: block; font-size: 1.6rem; color: var(--cork-light); }
+  .export .col span { font-size: var(--text-sm); opacity: .85; }
+
+  .news { border: 1px solid var(--line); border-radius: 12px; padding: 2rem; background: var(--surface); }
+  .news form { display: flex; flex-wrap: wrap; gap: .6rem; margin-top: 1.25rem; }
+  .news input {
+    flex: 1 1 240px; font: inherit; padding: .85rem 1rem;
+    border: 1px solid var(--line-strong); border-radius: 999px; background: var(--surface); color: inherit;
+  }
+  .news .small { font-size: var(--text-xs); color: var(--muted); margin-top: .8rem; }
+
+  footer { border-top: 1px solid var(--line); margin-top: 2rem; padding: 2rem 0; font-size: var(--text-sm); color: var(--muted); }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#conteudo" data-pt="Saltar para o conteúdo" data-en="Skip to content">Saltar para o conteúdo</a>
+
+<div class="demo-bar">
+  <span class="demo-bar__note">
+    <b data-pt="Demonstração." data-en="Demo.">Demonstração.</b>
+    <span data-pt="&quot;Cortiça Atlântica&quot; é uma marca inventada. Nada está à venda."
+          data-en="&quot;Cortiça Atlântica&quot; is an invented brand. Nothing is for sale.">
+      "Cortiça Atlântica" é uma marca inventada. Nada está à venda.</span>
+  </span>
+  <span class="demo-bar__right">
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang-btn="pt" aria-pressed="true">PT</button>
+      <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+    </div>
+    <a class="demo-bar__back" href="index.html" data-pt="← Portfólio" data-en="← Portfolio">← Portfólio</a>
+  </span>
+</div>
+
+<p class="topbar" data-pt="Envio grátis para toda a UE acima de 60 € · Entrega em 2-4 dias"
+   data-en="Free EU-wide shipping over €60 · Delivered in 2-4 days">
+  Envio grátis para toda a UE acima de 60 € · Entrega em 2-4 dias</p>
+
+<div class="wrap">
+  <nav class="nav">
+    <span class="logo">Cortiça Atlântica</span>
+    <span class="cart" data-pt="Carrinho (0)" data-en="Cart (0)">Carrinho (0)</span>
+  </nav>
+</div>
+
+<main id="conteudo">
+
+<header class="hero">
+  <div class="wrap hero-inner">
+    <div>
+      <h1 data-pt="Uma mala que não é de couro nem de plástico."
+          data-en="A bag that is neither leather nor plastic.">Uma mala que não é de couro nem de plástico.</h1>
+      <p data-pt="Cortiça do Alentejo: leve, impermeável, sem origem animal. Colhida à mão de sobreiros que ficam de pé e voltam a dar casca daqui a nove anos."
+         data-en="Alentejo cork: light, waterproof, no animal in it. Hand-harvested from oaks that stay standing and grow their bark back in nine years.">
+        Cortiça do Alentejo: leve, impermeável, sem origem animal. Colhida à mão de sobreiros que ficam de pé e voltam a dar casca daqui a nove anos.</p>
+      <a class="btn" href="#produtos" data-pt="Ver a coleção" data-en="Shop the collection">Ver a coleção</a>
+      <span class="meta" data-pt="Sai de Portugal, chega em 2-4 dias, sem alfândega em toda a UE · Devolução grátis em 30 dias"
+            data-en="Ships from Portugal, arrives in 2-4 days, no customs anywhere in the EU · Free 30-day returns">
+        Sai de Portugal, chega em 2-4 dias, sem alfândega em toda a UE · Devolução grátis em 30 dias</span>
+    </div>
+    <img class="hero__img"
+         src="https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=1000&amp;q=80"
+             srcset="https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=400&amp;q=80 400w, https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=600&amp;q=80 600w, https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=800&amp;q=80 800w, https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=1000&amp;q=80 1000w"
+             sizes="(max-width: 820px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 5.5rem) / 2), 526px"
+         alt="Duas malas em cortiça pousadas nos degraus de mármore de uma escadaria antiga"
+         fetchpriority="high" decoding="async">
+  </div>
+</header>
+
+<section class="versus">
+  <div class="wrap">
+    <h2 data-pt="Cortiça, couro ou sintético" data-en="Cork, leather or synthetic">Cortiça, couro ou sintético</h2>
+    <p class="lede" data-pt="A pergunta que recebemos mais vezes por email, respondida aqui."
+       data-en="The question we get by email most often, answered here.">
+      A pergunta que recebemos mais vezes por email, respondida aqui.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th></th>
+            <th data-pt="Cortiça" data-en="Cork">Cortiça</th>
+            <th data-pt="Couro" data-en="Leather">Couro</th>
+            <th data-pt="Sintético" data-en="Synthetic">Sintético</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <th scope="row" data-pt="Sem origem animal" data-en="No animal origin">Sem origem animal</th>
+            <td class="yes" data-pt="Sim" data-en="Yes">Sim</td>
+            <td class="no" data-pt="Não" data-en="No">Não</td>
+            <td class="yes" data-pt="Sim" data-en="Yes">Sim</td>
+          </tr>
+          <tr>
+            <th scope="row" data-pt="Impermeável sem tratamento" data-en="Waterproof untreated">Impermeável sem tratamento</th>
+            <td class="yes" data-pt="Sim" data-en="Yes">Sim</td>
+            <td class="no" data-pt="Não" data-en="No">Não</td>
+            <td class="yes" data-pt="Sim" data-en="Yes">Sim</td>
+          </tr>
+          <tr>
+            <th scope="row" data-pt="Peso de uma mala média" data-en="Weight of a medium bag">Peso de uma mala média</th>
+            <td class="yes">~380 g</td>
+            <td class="no">~900 g</td>
+            <td class="no">~650 g</td>
+          </tr>
+          <tr>
+            <th scope="row" data-pt="A árvore sobrevive à colheita" data-en="The tree survives harvest">A árvore sobrevive à colheita</th>
+            <td class="yes" data-pt="Sim, e dá casca outra vez em 9 anos" data-en="Yes, and regrows bark in 9 years">Sim, e dá casca outra vez em 9 anos</td>
+            <td class="no" data-pt="Não aplicável" data-en="Not applicable">Não aplicável</td>
+            <td class="no" data-pt="Derivado de petróleo" data-en="Petroleum-derived">Derivado de petróleo</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+  </div>
+</section>
+
+<section class="wrap" id="produtos">
+  <h2 data-pt="Mais vendidos" data-en="Best sellers">Mais vendidos</h2>
+  <p class="lede" data-pt="Cada peça sai da mesma oficina em Ponte de Sor. Stock real, sem pré-venda."
+     data-en="Every piece leaves the same workshop in Ponte de Sor. Real stock, no pre-orders.">
+    Cada peça sai da mesma oficina em Ponte de Sor. Stock real, sem pré-venda.</p>
+
+  <div class="products">
+    <article class="prod">
+      <img class="p-img"
+           src="https://images.unsplash.com/photo-1713425884368-9079ba200325?auto=format&amp;fit=crop&amp;w=700&amp;q=80"
+             srcset="https://images.unsplash.com/photo-1713425884368-9079ba200325?auto=format&amp;fit=crop&amp;w=300&amp;q=80 300w, https://images.unsplash.com/photo-1713425884368-9079ba200325?auto=format&amp;fit=crop&amp;w=450&amp;q=80 450w, https://images.unsplash.com/photo-1713425884368-9079ba200325?auto=format&amp;fit=crop&amp;w=700&amp;q=80 700w"
+             sizes="(max-width: 700px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 5.5rem) / 3), 350px"
+           alt="Mala de ombro cilíndrica em cortiça, alças de couro, sobre fundo claro"
+           loading="lazy" decoding="async">
+      <h3 data-pt="Mala de ombro Sado" data-en="Sado shoulder bag">Mala de ombro Sado</h3>
+      <p class="price">74 €</p>
+      <p class="ship" data-pt="Envia hoje · 3 em stock" data-en="Ships today · 3 in stock">Envia hoje · 3 em stock</p>
+    </article>
+    <article class="prod">
+      <img class="p-img"
+           src="https://images.unsplash.com/photo-1713425884588-8a1a4e0ab79e?auto=format&amp;fit=crop&amp;w=700&amp;q=80"
+             srcset="https://images.unsplash.com/photo-1713425884588-8a1a4e0ab79e?auto=format&amp;fit=crop&amp;w=300&amp;q=80 300w, https://images.unsplash.com/photo-1713425884588-8a1a4e0ab79e?auto=format&amp;fit=crop&amp;w=450&amp;q=80 450w, https://images.unsplash.com/photo-1713425884588-8a1a4e0ab79e?auto=format&amp;fit=crop&amp;w=700&amp;q=80 700w"
+             sizes="(max-width: 700px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 5.5rem) / 3), 350px"
+           alt="Três carteiras em cortiça de tons diferentes, dispostas sobre fundo branco"
+           loading="lazy" decoding="async">
+      <h3 data-pt="Carteira Mértola" data-en="Mértola wallet">Carteira Mértola</h3>
+      <p class="price">32 €</p>
+      <p class="ship" data-pt="Envia hoje · 11 em stock" data-en="Ships today · 11 in stock">Envia hoje · 11 em stock</p>
+    </article>
+    <article class="prod">
+      <img class="p-img"
+           src="https://images.unsplash.com/photo-1758077223465-974cd7ec13de?auto=format&amp;fit=crop&amp;w=700&amp;q=80"
+             srcset="https://images.unsplash.com/photo-1758077223465-974cd7ec13de?auto=format&amp;fit=crop&amp;w=300&amp;q=80 300w, https://images.unsplash.com/photo-1758077223465-974cd7ec13de?auto=format&amp;fit=crop&amp;w=450&amp;q=80 450w, https://images.unsplash.com/photo-1758077223465-974cd7ec13de?auto=format&amp;fit=crop&amp;w=700&amp;q=80 700w"
+             sizes="(max-width: 700px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 5.5rem) / 3), 350px"
+           alt="Rolha de cortiça em grande plano sobre pano de serapilheira"
+           loading="lazy" decoding="async">
+      <h3 data-pt="Conjunto de rolhas Herdade" data-en="Herdade stopper set">Conjunto de rolhas Herdade</h3>
+      <p class="price">24 €</p>
+      <p class="ship" data-pt="Envia hoje · 40 em stock" data-en="Ships today · 40 in stock">Envia hoje · 40 em stock</p>
+    </article>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="export">
+    <h2 data-pt="Feito aqui, entregue aí" data-en="Made here, delivered there">Feito aqui, entregue aí</h2>
+    <p data-pt="Metade das encomendas sai para Alemanha, França e Países Baixos. O processo é o mesmo para todos."
+       data-en="Half our orders go to Germany, France and the Netherlands. The process is the same for everyone.">
+      Metade das encomendas sai para Alemanha, França e Países Baixos. O processo é o mesmo para todos.</p>
+    <div class="cols">
+      <div class="col">
+        <strong>2-4</strong>
+        <span data-pt="dias úteis para qualquer país da UE" data-en="working days to anywhere in the EU">dias úteis para qualquer país da UE</span>
+      </div>
+      <div class="col">
+        <strong>0 €</strong>
+        <span data-pt="de portes acima de 60 €" data-en="shipping on orders over €60">de portes acima de 60 €</span>
+      </div>
+      <div class="col">
+        <strong>30</strong>
+        <span data-pt="dias para devolver, portes por nossa conta" data-en="days to return, we pay the postage">dias para devolver, portes por nossa conta</span>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section class="wrap">
+  <div class="news">
+    <h2 data-pt="10% de desconto na primeira encomenda" data-en="10% off your first order">10% de desconto na primeira encomenda</h2>
+    <p class="lede" style="margin-bottom:0" data-pt="Um email por mês. Peças novas e nada mais."
+       data-en="One email a month. New pieces and nothing else.">Um email por mês. Peças novas e nada mais.</p>
+    <form onsubmit="event.preventDefault(); showDemoNotice(this);">
+      <input type="email" required
+             data-pt-attr="placeholder:o.seu@email.pt" data-en-attr="placeholder:your@email.com"
+             placeholder="o.seu@email.pt" aria-label="Email">
+      <button class="btn" type="submit" data-pt="Quero o código" data-en="Send my code">Quero o código</button>
+          <p class="formstatus" role="status" aria-live="polite"></p>
+    </form>
+    <p class="small" data-pt="Pode cancelar a subscrição em qualquer email. Não partilhamos o seu endereço."
+       data-en="Unsubscribe from any email. We never share your address.">
+      Pode cancelar a subscrição em qualquer email. Não partilhamos o seu endereço.</p>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p data-pt="Cortiça Atlântica · Marca fictícia. Página de demonstração construída por Gabriel Silva."
+       data-en="Cortiça Atlântica · Fictional brand. Demo page built by Gabriel Silva.">
+      Cortiça Atlântica · Marca fictícia. Página de demonstração construída por Gabriel Silva.</p>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+</body>
+</html>

@@ -1,0 +1,9 @@
+# Documentos de trabalho. O repositório é público e o GitHub Pages serve
+# tudo o que estiver dentro dele.
+#
+# PRODUCT.md tem o posicionamento interno: personas, anti-referências e o
+# raciocínio por trás dos preços. Um cliente que o encontre lê o manual.
+PRODUCT.md
+
+# Críticas de design da própria página, com os defeitos listados e pontuados.
+.impeccable/

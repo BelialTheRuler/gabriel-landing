@@ -1,0 +1,332 @@
+<!doctype html>
+<html lang="pt">
+<head>
+<meta charset="utf-8">
+<meta name="viewport" content="width=device-width, initial-scale=1">
+<title>Gabriel Silva · Landing pages PT/EN</title>
+<meta name="description" content="Landing pages bilingues português/inglês para negócios que vendem a estrangeiros. Porto, remoto.">
+<link rel="preconnect" href="https://images.unsplash.com" crossorigin>
+<link rel="dns-prefetch" href="https://images.unsplash.com">
+<link rel="preload" href="fonts/archivo-latin.woff2" as="font" type="font/woff2" crossorigin>
+<link rel="stylesheet" href="shared.css">
+<style>
+  :root {
+    --bg: #ffffff;
+    --ink: #16181d;
+    --grey: #5f6672;
+    --line: #e6e8ec;
+    --accent: #2f5bea;
+    /* Cor do texto POR CIMA do accent. Separada de --accent de proposito:
+       em modo escuro o accent tem de clarear para se ler sobre o fundo, e
+       nesse momento o branco por cima dele cai para 2,6:1. */
+    --on-accent: #ffffff;
+    --soft: #f6f7f9;
+    --font-body: "Archivo", system-ui, sans-serif;
+  }
+  @media (prefers-color-scheme: dark) {
+    :root {
+      --bg: #101216; --ink: #eceef2; --grey: #9aa2af; --line: #262a32;
+      --accent: #7d9bff; --on-accent: #0d1117; --soft: #171a20;
+    }
+  }
+  body { background: var(--bg); color: var(--ink); }
+
+  header.top { padding: 4.5rem 0 3rem; }
+  /* Um kicker por pagina, nao um por seccao. Um e voz, um por seccao e
+     andaime. Tracking a 10% porque maiusculas ficam apertadas por omissao. */
+  .kicker { color: var(--accent); font-weight: 600; font-size: var(--text-sm); letter-spacing: .1em; text-transform: uppercase; }
+  h1 {
+    font-size: var(--text-h1); font-weight: 800;
+    letter-spacing: -.03em; margin: .8rem 0 1rem; max-width: 20ch;
+  }
+  .top p.lede { color: var(--grey); font-size: var(--text-lead); max-width: 54ch; }
+  .top .who { margin-top: 1.75rem; font-size: var(--text-sm); color: var(--grey); }
+  .cta-row { display: flex; flex-wrap: wrap; gap: .75rem; margin-top: 2rem; }
+  .btn {
+    display: inline-block; text-decoration: none; font: inherit; font-weight: 600;
+    padding: .85rem 1.6rem; border-radius: 8px;
+    background: var(--accent); color: var(--on-accent); border: 1px solid var(--accent);
+  }
+  .btn--alt { background: transparent; color: var(--ink); border-color: var(--line); }
+
+  section { padding: 3.5rem 0; border-top: 1px solid var(--line); }
+  h2 { font-size: var(--text-h2); font-weight: 700; letter-spacing: -.02em; margin-bottom: .5rem; }
+  h3 { font-size: var(--text-h3); font-weight: 600; }
+  .sub { color: var(--grey); margin-bottom: 2rem; max-width: 56ch; }
+
+  /* Os 3 trabalhos. Cartao inteiro clicavel. */
+  .works { display: grid; gap: 1.5rem; grid-template-columns: repeat(auto-fit, minmax(260px, 1fr)); }
+  .work {
+    display: block; text-decoration: none; color: inherit;
+    border: 1px solid var(--line); border-radius: 12px; overflow: hidden;
+    transition: transform .15s, border-color .15s;
+  }
+  .work:hover { transform: translateY(-3px); border-color: var(--accent); }
+  .work:focus-visible { outline: 2px solid var(--accent); outline-offset: 2px; }
+  /* A miniatura e a propria fotografia de abertura do demo. Um visitante
+     reconhece a pagina antes de a abrir. */
+  .thumb { width: 100%; aspect-ratio: 16/10; object-fit: cover; }
+  .work-body { padding: 1.25rem; }
+  .work-body h3 { margin-bottom: .3rem; }
+  .work-body p { font-size: var(--text-sm); color: var(--grey); }
+  .tags { display: flex; flex-wrap: wrap; gap: .35rem; margin-top: .9rem; }
+  .tag {
+    font-size: var(--text-xs); padding: .2rem .6rem; border-radius: 999px;
+    background: var(--soft); color: var(--grey); border: 1px solid var(--line);
+  }
+
+  .steps { display: grid; gap: 1.25rem; grid-template-columns: repeat(auto-fit, minmax(200px, 1fr)); counter-reset: s; }
+  .step { padding-top: 1rem; border-top: 2px solid var(--accent); }
+  .step h3 { font-size: var(--text-lead); margin-bottom: .3rem; }
+  .step h3::before { counter-increment: s; content: counter(s) ". "; color: var(--accent); }
+  .step p { font-size: var(--text-sm); color: var(--grey); }
+
+  table { width: 100%; border-collapse: collapse; font-size: var(--text-sm); }
+  th, td { text-align: left; padding: .85rem .6rem; border-bottom: 1px solid var(--line); vertical-align: top; }
+  th { font-size: var(--text-xs); text-transform: uppercase; letter-spacing: .06em; color: var(--grey); }
+  td.price { font-weight: 700; white-space: nowrap; }
+  .table-scroll { overflow-x: auto; }
+  .price-note { font-size: var(--text-sm); color: var(--grey); margin-top: 1rem; }
+
+  .contact { background: var(--soft); border-radius: 12px; padding: 2.25rem; }
+  .contact a.mail {
+    font-size: var(--text-h3); font-weight: 700; color: var(--accent);
+    display: inline-flex; align-items: center; min-height: 44px;
+  }
+  .contact ul { list-style: none; margin-top: 1.25rem; display: grid; gap: .4rem; font-size: var(--text-sm); color: var(--grey); }
+
+  footer { padding: 2.5rem 0; font-size: var(--text-sm); color: var(--grey); border-top: 1px solid var(--line); }
+</style>
+</head>
+<body>
+
+<a class="skip-link" href="#conteudo" data-pt="Saltar para o conteúdo" data-en="Skip to content">Saltar para o conteúdo</a>
+
+<div class="demo-bar">
+  <span class="demo-bar__note">
+    <span data-pt="Os três exemplos abaixo são projetos de demonstração, com empresas fictícias."
+          data-en="The three examples below are demo projects, using fictional businesses.">
+      Os três exemplos abaixo são projetos de demonstração, com empresas fictícias.</span>
+  </span>
+  <span class="demo-bar__right">
+    <div class="lang" role="group" aria-label="Idioma / Language">
+      <button type="button" data-lang-btn="pt" aria-pressed="true">PT</button>
+      <button type="button" data-lang-btn="en" aria-pressed="false">EN</button>
+    </div>
+  </span>
+</div>
+
+<main id="conteudo">
+
+<header class="top">
+  <div class="wrap">
+    <p class="kicker" data-pt="Landing pages · Português + Inglês" data-en="Landing pages · Portuguese + English">Landing pages · Português + Inglês</p>
+    <h1 data-pt="Uma página que vende nas duas línguas do seu negócio."
+        data-en="One page that sells in both languages your business needs.">
+      Uma página que vende nas duas línguas do seu negócio.</h1>
+    <p class="lede" data-pt="Se vende a portugueses e a estrangeiros, precisa das duas. Faço a página, o formulário que funciona mesmo, e deixo tudo a correr no seu domínio."
+       data-en="If you sell to Portuguese and foreign customers, you need both. I build the page, the form that actually works, and leave it running on your own domain.">
+      Se vende a portugueses e a estrangeiros, precisa das duas. Faço a página, o formulário que funciona mesmo, e deixo tudo a correr no seu domínio.</p>
+    <p class="who" data-pt="Gabriel Silva · Porto e remoto · entrega em 3 a 7 dias"
+       data-en="Gabriel Silva · Porto and remote · delivered in 3 to 7 days">
+      Gabriel Silva · Porto e remoto · entrega em 3 a 7 dias</p>
+    <div class="cta-row">
+      <a class="btn" href="mailto:belialdev.pro@protonmail.com?subject=Landing%20page"
+         data-pt="Falar sobre a sua página" data-en="Talk about your page">Falar sobre a sua página</a>
+      <a class="btn btn--alt" href="#trabalhos" data-pt="Ver os exemplos" data-en="See the examples">Ver os exemplos</a>
+    </div>
+  </div>
+</header>
+
+<section id="trabalhos">
+  <div class="wrap">
+    <h2 data-pt="Três exemplos" data-en="Three examples">Três exemplos</h2>
+    <p class="sub" data-pt="Cada um num setor diferente, e todos com o botão PT/EN no topo. Carregue nele. É a parte que a maioria das páginas portuguesas não tem."
+       data-en="One per sector, each with the PT/EN switch at the top. Click it. That is the part most Portuguese pages are missing.">
+      Cada um num setor diferente, e todos com o botão PT/EN no topo. Carregue nele. É a parte que a maioria das páginas portuguesas não tem.</p>
+
+    <div class="works">
+      <a class="work" href="demo-alojamento.html">
+        <img class="thumb"
+             src="https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=700&amp;q=75"
+             srcset="https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=320&amp;q=80 320w, https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=480&amp;q=80 480w, https://images.unsplash.com/photo-1720270228843-d6e63a0c1a01?auto=format&amp;fit=crop&amp;w=700&amp;q=80 700w"
+             sizes="(max-width: 720px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 5.5rem) / 3), 350px"
+             alt="Socalcos de vinha sobre o vale do Douro, exemplo de alojamento local"
+             style="object-position: 50% 15%"
+             loading="lazy" decoding="async">
+        <div class="work-body">
+          <h3 data-pt="Alojamento local no Douro" data-en="Guest house in the Douro">Alojamento local no Douro</h3>
+          <p data-pt="Pedido de reserva com datas, sem passar por plataforma nem pagar comissão."
+             data-en="Booking requests with dates, no platform in between and no commission.">
+            Pedido de reserva com datas, sem passar por plataforma nem pagar comissão.</p>
+          <div class="tags">
+            <span class="tag">PT / EN</span>
+            <span class="tag" data-pt="Reservas" data-en="Bookings">Reservas</span>
+            <span class="tag">WhatsApp</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="demo-clinica.html">
+        <img class="thumb"
+             src="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&amp;fit=crop&amp;w=700&amp;q=75"
+             srcset="https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&amp;fit=crop&amp;w=320&amp;q=80 320w, https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&amp;fit=crop&amp;w=480&amp;q=80 480w, https://images.unsplash.com/photo-1629909613654-28e377c37b09?auto=format&amp;fit=crop&amp;w=700&amp;q=80 700w"
+             sizes="(max-width: 720px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 5.5rem) / 3), 350px"
+             alt="Gabinete de dentista iluminado, exemplo de página de clínica"
+             loading="lazy" decoding="async">
+        <div class="work-body">
+          <h3 data-pt="Clínica dentária" data-en="Dental clinic">Clínica dentária</h3>
+          <p data-pt="Marcação em 30 segundos, com horas visíveis. Menos telefonemas na recepção."
+             data-en="Booking in 30 seconds, with visible time slots. Fewer calls at reception.">
+            Marcação em 30 segundos, com horas visíveis. Menos telefonemas na recepção.</p>
+          <div class="tags">
+            <span class="tag">PT / EN</span>
+            <span class="tag" data-pt="Marcações" data-en="Appointments">Marcações</span>
+            <span class="tag">FAQ</span>
+          </div>
+        </div>
+      </a>
+
+      <a class="work" href="demo-loja.html">
+        <img class="thumb"
+             src="https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=700&amp;q=75"
+             srcset="https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=320&amp;q=80 320w, https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=480&amp;q=80 480w, https://images.unsplash.com/photo-1701793267196-f4ea735df3b6?auto=format&amp;fit=crop&amp;w=700&amp;q=80 700w"
+             sizes="(max-width: 720px) calc(100vw - 2.5rem), (max-width: 1140px) calc((100vw - 5.5rem) / 3), 350px"
+             alt="Malas em cortiça numa escadaria de mármore, exemplo de loja portuguesa a exportar"
+             loading="lazy" decoding="async">
+        <div class="work-body">
+          <h3 data-pt="Marca portuguesa a exportar" data-en="Portuguese brand exporting">Marca portuguesa a exportar</h3>
+          <p data-pt="Portes, prazos e devoluções explicados na língua de quem compra lá fora."
+             data-en="Shipping, delivery times and returns explained in the buyer's own language.">
+            Portes, prazos e devoluções explicados na língua de quem compra lá fora.</p>
+          <div class="tags">
+            <span class="tag">PT / EN</span>
+            <span class="tag" data-pt="E-commerce" data-en="E-commerce">E-commerce</span>
+            <span class="tag" data-pt="Exportação UE" data-en="EU export">Exportação UE</span>
+          </div>
+        </div>
+      </a>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 data-pt="Como funciona" data-en="How it works">Como funciona</h2>
+    <p class="sub" data-pt="Quatro passos. Sabe o preço antes de começar e não há surpresa no fim."
+       data-en="Four steps. You know the price before we start and there is no surprise at the end.">
+      Quatro passos. Sabe o preço antes de começar e não há surpresa no fim.</p>
+    <div class="steps">
+      <div class="step">
+        <h3 data-pt="Conversa de 20 minutos" data-en="A 20-minute call">Conversa de 20 minutos</h3>
+        <p data-pt="Diga-me o que vende e a quem. Digo-lhe se precisa mesmo de uma página, e se não precisar digo isso."
+           data-en="Tell me what you sell and to whom. I tell you whether you actually need a page, and if you do not, I say so.">
+          Diz-me o que vende e a quem. Digo-lhe se precisa mesmo de uma página, e se não precisar digo isso.</p>
+      </div>
+      <div class="step">
+        <h3 data-pt="Orçamento por escrito" data-en="Written quote">Orçamento por escrito</h3>
+        <p data-pt="Preço fixo, o que está incluído, e a data de entrega. Metade adiantada."
+           data-en="Fixed price, what is included, and the delivery date. Half upfront.">
+          Preço fixo, o que está incluído, e a data de entrega. Metade adiantada.</p>
+      </div>
+      <div class="step">
+        <h3 data-pt="Construção e uma revisão" data-en="Build and one revision">Construção e uma revisão</h3>
+        <p data-pt="Vê a página online antes de ir para o ar. Uma ronda de alterações incluída."
+           data-en="You see the page online before it goes live. One round of changes included.">
+          Vê a página online antes de ir para o ar. Uma ronda de alterações incluída.</p>
+      </div>
+      <div class="step">
+        <h3 data-pt="Ligada ao seu domínio" data-en="Live on your domain">Ligada ao seu domínio</h3>
+        <p data-pt="Domínio, email, analytics, e o formulário testado a chegar à sua caixa. É a parte que costuma falhar."
+           data-en="Domain, email, analytics, and the form tested end-to-end into your inbox. That is the part that usually breaks.">
+          Domínio, email, analytics, e o formulário testado a chegar à sua caixa. É a parte que costuma falhar.</p>
+      </div>
+    </div>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <h2 data-pt="Preços" data-en="Pricing">Preços</h2>
+    <p class="sub" data-pt="Preço fixo, acordado antes. Não cobro à hora."
+       data-en="Fixed price, agreed in advance. I do not charge by the hour.">
+      Preço fixo, acordado antes. Não cobro à hora.</p>
+    <div class="table-scroll">
+      <table>
+        <thead>
+          <tr>
+            <th data-pt="Pacote" data-en="Package">Pacote</th>
+            <th data-pt="Preço" data-en="Price">Preço</th>
+            <th data-pt="Inclui" data-en="Includes">Inclui</th>
+          </tr>
+        </thead>
+        <tbody>
+          <tr>
+            <td data-pt="Essencial" data-en="Essential">Essencial</td>
+            <td class="price" data-pt="150 €" data-en="€150">150 €</td>
+            <td data-pt="Uma página, uma língua, formulário a funcionar, adaptada a telemóvel. 3 dias."
+                data-en="One page, one language, working form, mobile-ready. 3 days.">
+              Uma página, uma língua, formulário a funcionar, adaptada a telemóvel. 3 dias.</td>
+          </tr>
+          <tr>
+            <td data-pt="Bilingue" data-en="Bilingual">Bilingue</td>
+            <td class="price" data-pt="280 €" data-en="€280">280 €</td>
+            <td data-pt="Tudo o anterior, mais a segunda língua e ligação a WhatsApp ou email. 5 dias."
+                data-en="Everything above, plus the second language and WhatsApp or email integration. 5 days.">
+              Tudo o anterior, mais a segunda língua e ligação a WhatsApp ou email. 5 dias.</td>
+          </tr>
+          <tr>
+            <td data-pt="Completo" data-en="Complete">Completo</td>
+            <td class="price" data-pt="450 €" data-en="€450">450 €</td>
+            <td data-pt="Tudo o anterior, mais domínio e alojamento configurados, analytics, e duas semanas de ajustes. 7 dias."
+                data-en="Everything above, plus domain and hosting set up, analytics, and two weeks of adjustments. 7 days.">
+              Tudo o anterior, mais domínio e alojamento configurados, analytics, e duas semanas de ajustes. 7 dias.</td>
+          </tr>
+          <tr>
+            <td data-pt="Manutenção" data-en="Maintenance">Manutenção</td>
+            <td class="price" data-pt="30 €/mês" data-en="€30/mo">30 €/mês</td>
+            <td data-pt="Alterações pequenas, cópias de segurança, e alguém a quem ligar quando alguma coisa parar."
+                data-en="Small changes, backups, and someone to call when something stops working.">
+              Alterações pequenas, cópias de segurança, e alguém a quem ligar quando alguma coisa parar.</td>
+          </tr>
+        </tbody>
+      </table>
+    </div>
+    <p class="price-note" data-pt="Não incluído: fotografia, textos de raiz em grande volume, e licenças ou subscrições, que ficam em nome do cliente."
+       data-en="Not included: photography, large volumes of copywriting from scratch, and licences or subscriptions, which stay in the client's name.">
+      Não incluído: fotografia, textos de raiz em grande volume, e licenças ou subscrições, que ficam em nome do cliente.</p>
+  </div>
+</section>
+
+<section>
+  <div class="wrap">
+    <div class="contact">
+      <h2 data-pt="Diga-me o que vende" data-en="Tell me what you sell">Diga-me o que vende</h2>
+      <p class="sub" style="margin-bottom:1rem" data-pt="Responda com duas linhas sobre o negócio. Respondo no mesmo dia."
+         data-en="Reply with two lines about your business. I answer the same day.">
+        Responda com duas linhas sobre o negócio. Respondo no mesmo dia.</p>
+      <a class="mail" href="mailto:belialdev.pro@protonmail.com?subject=Landing%20page">belialdev.pro@protonmail.com</a>
+      <ul>
+        <li data-pt="Português e inglês" data-en="Portuguese and English">Português e inglês</li>
+        <li data-pt="Porto, e remoto para toda a UE" data-en="Porto, and remote across the EU">Porto, e remoto para toda a UE</li>
+        <li data-pt="Contrato simples e recibo. Metade adiantada, metade na entrega."
+            data-en="Simple contract and invoice. Half upfront, half on delivery.">
+          Contrato simples e recibo. Metade adiantada, metade na entrega.</li>
+      </ul>
+    </div>
+  </div>
+</section>
+
+</main>
+
+<footer>
+  <div class="wrap">
+    <p data-pt="Gabriel Silva · As páginas de exemplo usam empresas fictícias e servem para mostrar o trabalho, não clientes reais."
+       data-en="Gabriel Silva · The example pages use fictional businesses and exist to show the work, not real clients.">
+      Gabriel Silva · As páginas de exemplo usam empresas fictícias e servem para mostrar o trabalho, não clientes reais.</p>
+  </div>
+</footer>
+
+<script src="shared.js"></script>
+</body>
+</html>
