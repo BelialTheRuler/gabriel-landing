@@ -180,10 +180,22 @@
 
 <main id="conteudo">
 
-<header class="top">
+<header class="top gs-cortina">
   <div class="wrap top-inner">
     <div class="top-copy">
-      <p class="kicker" data-pt="Landing pages · Português + Inglês" data-en="Landing pages · Portuguese + English">Landing pages · Português + Inglês</p>
+      <p class="kicker">
+        <span data-pt="Landing pages PT+EN para" data-en="PT+EN landing pages for">Landing pages PT+EN para</span>
+        <span class="roda"
+              data-roda='["alojamento local","clínicas","lojas a exportar"]'
+              data-roda-en='["guest houses","clinics","shops that export"]'>
+          <!-- Reserva a largura da opcao mais larga DE CADA LINGUA, medida no
+               browser. Por caracteres davam empate; desenhadas nao dao.
+               PT: "alojamento local" 169px · EN: "shops that export" 173px -->
+          <span class="roda__medida" aria-hidden="true"
+                data-pt="alojamento local" data-en="shops that export">alojamento local</span>
+          <span class="roda__vivo">alojamento local</span>
+        </span>
+      </p>
       <h1 data-pt="Uma página que vende nas duas línguas do seu negócio."
           data-en="One page that sells in both languages your business needs.">
         Uma página que vende nas duas línguas do seu negócio.</h1>
@@ -194,7 +206,7 @@
          data-en="Gabriel Silva · Porto and remote · delivered in 3 to 7 days">
         Gabriel Silva · Porto e remoto · entrega em 3 a 7 dias</p>
       <div class="cta-row">
-        <a class="btn" href="mailto:belialdev.pro@protonmail.com?subject=Landing%20page"
+        <a class="btn" data-pill href="mailto:belialdev.pro@protonmail.com?subject=Landing%20page"
            data-pt="Falar sobre a sua página" data-en="Talk about your page">Falar sobre a sua página</a>
         <a class="btn btn--alt" href="#trabalhos" data-pt="Ver os exemplos" data-en="See the examples">Ver os exemplos</a>
       </div>

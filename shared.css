@@ -254,6 +254,71 @@ button[disabled] { opacity: .5; cursor: not-allowed; }
   .gs-enter > *, [data-reveal].is-in > * { animation: none; }
 }
 
+/* --- Cortina de abertura ------------------------------------------------
+   O hero abre de baixo para cima enquanto o conteudo sobe mais devagar.
+   Duas velocidades dao profundidade: e a diferenca entre "a pagina apareceu"
+   e "a pagina abriu".
+
+   So corre se o JS puser .pode-abrir na raiz, o que so acontece quando a
+   pagina esta MESMO visivel. Num separador de fundo as animacoes CSS ficam
+   pausadas, e um clip-path pausado a 0% deixaria o hero invisivel. Sem a
+   classe, nao ha animacao nenhuma e o hero esta simplesmente la. --- */
+@keyframes gsCortina {
+  from { clip-path: inset(100% 0 0 0); }
+  to   { clip-path: inset(0 0 0 0); }
+}
+/* So a cortina. O conteudo la dentro ja sobe pelo .gs-enter das paginas;
+   aplicar as duas coisas ao mesmo elemento dava movimento a dobrar. */
+.pode-abrir .gs-cortina { animation: gsCortina 900ms cubic-bezier(.16, 1, .3, 1) both; }
+
+/* --- Palavra que roda ---------------------------------------------------
+   Diz tres coisas no espaco de uma. A palavra mais larga reserva a largura
+   para nao haver salto de layout a cada troca. --- */
+.roda {
+  display: inline-grid;
+  vertical-align: bottom;
+  overflow: hidden;
+}
+.roda > * { grid-area: 1 / 1; }
+.roda__medida { visibility: hidden; pointer-events: none; }
+.roda__vivo { transition: opacity 220ms var(--ease), transform 220ms var(--ease); }
+.roda.a-trocar .roda__vivo { opacity: 0; transform: translateY(-.35em); }
+
+/* --- Acao flutuante em pastilha -----------------------------------------
+   Segue o visitante em vez de ficar para tras quando ele rola. Em telemovel
+   fica ao alcance do polegar, que e onde a conversao se ganha ou perde.
+   E injectada por JS e duplica um botao que ja existe na pagina, por isso
+   sem JS nao se perde nada. --- */
+.cta-pill {
+  position: fixed;
+  left: 50%;
+  bottom: max(1rem, env(safe-area-inset-bottom, 0px));
+  z-index: var(--z-sticky);
+  display: inline-flex;
+  align-items: center;
+  gap: var(--sp-2);
+  min-height: 48px;
+  padding: 0 var(--sp-3) 0 var(--sp-6);
+  border-radius: var(--radius-pill);
+  text-decoration: none;
+  font-weight: 700;
+  font-size: var(--text-sm);
+  box-shadow: 0 10px 34px rgba(0, 0, 0, .3);
+  transform: translate(-50%, calc(100% + 2rem));
+  transition: transform 420ms var(--ease);
+  white-space: nowrap;
+  max-width: calc(100vw - 2rem);
+}
+.cta-pill.esta-visivel { transform: translate(-50%, 0); }
+.cta-pill__seta {
+  display: grid; place-items: center;
+  width: 32px; height: 32px; flex: none;
+  border-radius: 50%;
+  background: rgba(255, 255, 255, .18);
+}
+.cta-pill__seta svg { width: 15px; height: 15px; stroke-width: 2.25; }
+@media (prefers-reduced-motion: reduce) { .cta-pill { transition: none; } }
+
 @media (prefers-reduced-motion: reduce) {
   *, *::before, *::after {
     animation-duration: .01ms !important;
