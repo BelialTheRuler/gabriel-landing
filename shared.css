@@ -220,6 +220,53 @@ button[disabled] { opacity: .5; cursor: not-allowed; }
 }
 .formstatus:empty { margin-top: 0; }
 
+/* Erro por campo. Vermelho E texto: a cor sozinha nao serve a quem nao a
+   distingue. Colada ao campo, nao no topo do formulario. */
+.erro-campo {
+  font-size: var(--text-xs);
+  line-height: 1.4;
+  margin-top: var(--sp-1);
+  color: oklch(62% .19 25);
+}
+.erro-campo:empty { display: none; }
+[aria-invalid="true"] { outline: 2px solid oklch(62% .19 25); outline-offset: 1px; }
+
+/* --- Galeria com scroll-snap ---------------------------------------------
+   Nativa. Toque, teclado e roda do rato ja funcionam sem uma linha de JS,
+   e sem os ~140 KB que uma biblioteca de carrossel custaria. --- */
+.galeria {
+  display: grid;
+  grid-auto-flow: column;
+  grid-auto-columns: min(78%, 30rem);
+  gap: var(--sp-3);
+  overflow-x: auto;
+  overscroll-behavior-x: contain;
+  scroll-snap-type: x mandatory;
+  scroll-padding-inline: var(--sp-3);
+  padding-bottom: var(--sp-2);
+  scrollbar-width: thin;
+}
+.galeria > * { scroll-snap-align: start; }
+.galeria img {
+  width: 100%; aspect-ratio: 3/2; object-fit: cover;
+  border-radius: var(--radius); cursor: zoom-in;
+}
+.galeria-dica { font-size: var(--text-xs); opacity: .7; margin-top: var(--sp-1); }
+
+/* Lightbox com <dialog>. O elemento nativo ja traz foco preso, Escape para
+   fechar e o backdrop; uma versao a mao seria mais codigo e pior. */
+dialog.lupa {
+  border: 0; padding: 0; background: transparent;
+  max-width: min(92vw, 1100px); max-height: 90vh;
+}
+dialog.lupa::backdrop { background: rgba(0, 0, 0, .82); }
+dialog.lupa img { width: 100%; height: auto; border-radius: var(--radius); }
+dialog.lupa form { position: absolute; top: var(--sp-2); right: var(--sp-2); }
+dialog.lupa button {
+  width: 44px; height: 44px; border-radius: 50%; border: 0; cursor: pointer;
+  background: rgba(0, 0, 0, .6); color: #fff; font-size: 1.2rem; line-height: 1;
+}
+
 /* --- Entrada e revelacao -------------------------------------------------
    Duas coisas, nao mais. Uma entrada no hero (CSS puro, corre sozinha) e um
    stagger nos grupos marcados com data-reveal quando entram no ecra.

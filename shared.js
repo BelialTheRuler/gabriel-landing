@@ -27,6 +27,92 @@ function showDemoNotice(form) {
   }
 }
 
+// Mensagens de erro proprias nos formularios.
+//
+// Sem isto so ha as bolhas nativas do browser: aparecem na lingua do SISTEMA
+// (um alemao a ver a pagina em portugues recebe "Bitte fullen Sie dieses
+// Feld aus"), desaparecem sozinhas ao fim de segundos, e o leitor de ecra
+// nao as anuncia de forma fiavel.
+(function () {
+  var MSG = {
+    pt: {
+      valueMissing: "Falta preencher este campo.",
+      typeMismatch: "Verifique o formato. Um email é assim: nome@dominio.pt",
+      rangeUnderflow: "Escolha uma data a partir de hoje.",
+      patternMismatch: "O formato não está correcto.",
+      tooShort: "Está curto demais.",
+      generico: "Verifique este campo."
+    },
+    en: {
+      valueMissing: "This field is required.",
+      typeMismatch: "Check the format. An email looks like name@domain.com",
+      rangeUnderflow: "Pick a date from today onwards.",
+      patternMismatch: "The format is not right.",
+      tooShort: "That is too short.",
+      generico: "Please check this field."
+    }
+  };
+
+  function texto(campo) {
+    var m = MSG[document.documentElement.lang === "en" ? "en" : "pt"];
+    var v = campo.validity;
+    for (var k in m) if (k !== "generico" && v[k]) return m[k];
+    return m.generico;
+  }
+
+  function caixaDe(campo) {
+    var pai = campo.closest(".field") || campo.parentElement;
+    var box = pai.querySelector(".erro-campo");
+    if (!box) {
+      box = document.createElement("p");
+      box.className = "erro-campo";
+      box.id = "erro-" + (campo.id || Math.random().toString(36).slice(2, 8));
+      pai.appendChild(box);
+    }
+    return box;
+  }
+
+  function marcar(campo) {
+    var box = caixaDe(campo);
+    box.textContent = texto(campo);
+    campo.setAttribute("aria-invalid", "true");
+    campo.setAttribute("aria-describedby", box.id);
+  }
+
+  function limpar(campo) {
+    var pai = campo.closest(".field") || campo.parentElement;
+    var box = pai && pai.querySelector(".erro-campo");
+    if (box) box.textContent = "";
+    campo.removeAttribute("aria-invalid");
+    campo.removeAttribute("aria-describedby");
+  }
+
+  document.querySelectorAll("form").forEach(function (form) {
+    // Silencia a bolha nativa e escreve a mensagem no sitio, em capture
+    // porque o evento invalid nao borbulha.
+    form.addEventListener("invalid", function (e) {
+      e.preventDefault();
+      marcar(e.target);
+      if (!form.querySelector("[aria-invalid]:not(:focus)") || e.target === form.elements[0]) {
+        e.target.focus();
+      }
+    }, true);
+
+    // Valida ao sair do campo, mas so depois de ele ter sido tocado: avisar
+    // de "campo obrigatorio" antes de a pessoa escrever seja o que for e
+    // hostil.
+    form.addEventListener("blur", function (e) {
+      var c = e.target;
+      if (!c.willValidate || !c.value) return;
+      c.checkValidity() ? limpar(c) : marcar(c);
+    }, true);
+
+    form.addEventListener("input", function (e) {
+      if (e.target.getAttribute("aria-invalid") && e.target.checkValidity()) limpar(e.target);
+    });
+  });
+})();
+
 (function () {
   var KEY = "gs-lang";
   var first = true;
@@ -51,6 +137,17 @@ function showDemoNotice(form) {
     });
 
     try { localStorage.setItem(KEY, lang); } catch (e) { /* modo privado */ }
+
+    // A lingua passa a estar no URL. Sem isto nao havia forma de mandar a
+    // versao inglesa a alguem: o link abria sempre na lingua do browser de
+    // quem recebe. replaceState em vez de push para nao encher o historico.
+    try {
+      var u = new URL(location.href);
+      if (u.searchParams.get("lang") !== lang) {
+        u.searchParams.set("lang", lang);
+        history.replaceState(null, "", u);
+      }
+    } catch (e) { /* file:// nao tem URL manipulavel */ }
   }
 
   // A troca de lingua e o argumento de venda destas paginas, por isso tem de
@@ -87,8 +184,17 @@ function showDemoNotice(form) {
     }
   });
 
+  // Ordem de prioridade: o que o link diz > o que o visitante escolheu antes
+  // > a lingua do browser. O URL ganha porque e uma escolha explicita de quem
+  // partilhou o link.
+  function doUrl() {
+    try {
+      var v = new URL(location.href).searchParams.get("lang");
+      return v === "pt" || v === "en" ? v : null;
+    } catch (e) { return null; }
+  }
   var prefers = (navigator.language || "pt").slice(0, 2) === "en" ? "en" : "pt";
-  apply(stored() || prefers);
+  apply(doUrl() || stored() || prefers);
 
   window.__setLang = apply;
 })();
@@ -131,6 +237,31 @@ function showDemoNotice(form) {
   window.addEventListener("scroll", agendar, { passive: true });
   window.addEventListener("resize", agendar);
   verificar();
+})();
+
+// Lupa para as fotos das galerias. Usa <dialog> nativo: ja traz o foco
+// preso, o Escape a fechar e o backdrop. Uma versao a mao seria mais codigo
+// e pior. Se o browser nao tiver showModal, os cliques nao fazem nada e a
+// galeria continua a funcionar na mesma.
+(function () {
+  var fotos = document.querySelectorAll(".galeria img");
+  if (!fotos.length || !window.HTMLDialogElement) return;
+
+  var dlg = document.createElement("dialog");
+  dlg.className = "lupa";
+  dlg.innerHTML = '<form method="dialog"><button aria-label="Fechar">&times;</button></form><img alt="">';
+  document.body.appendChild(dlg);
+  var alvo = dlg.querySelector("img");
+
+  fotos.forEach(function (f) {
+    f.addEventListener("click", function () {
+      alvo.src = f.currentSrc || f.src;
+      alvo.alt = f.alt;
+      dlg.showModal();
+    });
+  });
+  // Clicar fora fecha. O ::backdrop conta como clique no proprio dialog.
+  dlg.addEventListener("click", function (e) { if (e.target === dlg) dlg.close(); });
 })();
 
 // Cortina de abertura. So arma se a pagina estiver mesmo visivel: num
